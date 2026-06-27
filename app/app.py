@@ -40,7 +40,7 @@ def load_assets():
     return model_h, model_a, t_enc, tourn_enc, df_proccesed
 
 try:
-    model_home, model_away, team_encoder, tourn_encoder, results_df = load_resources()
+    model_home, model_away, team_encoder, tourn_encoder, results_df = load_assets()
 except Exception as e:
     st.error(f"Error al cargar recursos. Verifique la existencia de los archivos en sus directorios correspondientes: {e}")
     st.stop()
