@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import joblib
 from datetime import datetime as dt
+import os
 
 # Configuración de la página de Streamlit
 st.set_page_config(page_title="Prode App", layout="centered")
@@ -10,20 +11,33 @@ st.title("Predictor de Resultados de Partidos Internacionales de Fútbol")
 st.write("Interfaz gráfica interactiva para estimar marcadores utilizando modelos de Machine Learning.")
 
 # 1. Cargar modelos, encoders y datos históricos
+
+# 1. Carga optimizada de artefactos en caché
 @st.cache_resource
-def load_resources():
-    # Modelos guardados en la carpeta raíz del proyecto
-    model_home = joblib.load("model_home.pkl")
-    model_away = joblib.load("model_away.pkl")
+def load_assets():
+    # Obtener la ruta del directorio donde está app.py
+    current_dir = os.path.dirname(os.path.abspath(__file__))
     
-    # Encoders guardados en la carpeta raíz del proyecto
-    team_encoder = joblib.load("team_encoder.pkl")
-    tourn_encoder = joblib.load("tournament_encoder.pkl")
+    # Construir rutas absolutas correctas a los archivos
+    model_home_path = os.path.join(current_dir, "model_home.pkl")
+    model_away_path = os.path.join(current_dir, "model_away.pkl")
+    team_encoder_path = os.path.join(current_dir, "team_encoder.pkl")
+    tournament_encoder_path = os.path.join(current_dir, "tournament_encoder.pkl")
+    csv_path = os.path.join(current_dir, "results_proccesed.csv")
     
-    # Dataset histórico ubicado dentro de la carpeta 'data'
-    results_df = pd.read_csv("results_proccesed.csv")
+    # Cargar los recursos
+    model_h = joblib.load(model_home_path)
+    model_a = joblib.load(model_away_path)
+    t_enc = joblib.load(team_encoder_path)
+    tourn_enc = joblib.load(tournament_encoder_path)
     
-    return model_home, model_away, team_encoder, tourn_encoder, results_df
+    df_proccesed = pd.read_csv(csv_path, dtype={
+        'home_goals_for_5': float,
+        'home_goals_against_5': float,
+        'away_goals_for_5': float,
+        'away_goals_against_5': float
+    })
+    return model_h, model_a, t_enc, tourn_enc, df_proccesed
 
 try:
     model_home, model_away, team_encoder, tourn_encoder, results_df = load_resources()
