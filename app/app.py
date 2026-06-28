@@ -7,8 +7,7 @@ import os
 
 # Configuración de la página de Streamlit
 st.set_page_config(page_title="Prode App", layout="centered")
-st.title("Predictor de Resultados de Partidos Internacionales de Fútbol")
-st.write("Interfaz gráfica interactiva para estimar marcadores utilizando modelos de Machine Learning.")
+st.title("Prode App")
 
 # 1. Cargar modelos, encoders y datos históricos
 
